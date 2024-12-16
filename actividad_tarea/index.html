@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,8 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }	
+        }
+
         .Body {
             display: flex;
             flex-direction: column;
@@ -17,6 +19,7 @@
             height: 100vh;
             font-family: Arial, sans-serif;
         }
+
         .Header {
             height: 60px;
             width: 100%;
@@ -27,28 +30,102 @@
             text-align: center;
         }
 
+       
+      
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: none;
+            outline: none;
+        }
+
+        .tab-button.active {
+            background-color: #ddd;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .accordion-item {
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+
+        .accordion-header {
+            background-color: #f0f0f0;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .accordion-content {
+            padding: 10px;
+            display: none;
+        }
+    
+
 
     </style>
 </head>
+
 <body class="Body">
     <header class="Header">
-    <h1>Lista de Tareas</h1>
-</header>
+        <h1>Lista de Tareas</h1>
+    </header>
 
-    <div>
-        <ul id="listaTareas">
-            <li>Ingrese tareas en su lista...</li>
-            <!-- <li>Tarea 1</li>
-            <li>Tarea 2</li> -->
-        </ul>
+    <div class="tabs">
+        <button class="tab-button active" data-tab="tasks">Tareas</button>
+        <button class="tab-button" data-tab="menu">Menú</button>
     </div>
 
-    <form id="formTarea">
-        <input id="txtTarea" type="text" name="tuTarea" placeholder="Ingrese una tarea" >
-        <button type="submit">Agregar Tarea</button>
+    <div id="tasks" class="tab-content active">
+        <div>
+            <ul id="listaTareas">
+                <li>Ingrese tareas en su lista...</li>
+            </ul>
+        </div>
 
-        
-    </form>
+        <form id="formTarea">
+            <input id="txtTarea" type="text" name="tuTarea" placeholder="Ingrese una tarea">
+            <button type="submit">Agregar Tarea</button>
+        </form>
+    </div>
+
+    <div id="menu" class="tab-content">
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header">Perfil</button>
+                <div class="accordion-content">
+                    <p>Contenido del perfil...</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-header">Configuración</button>
+                <div class="accordion-content">
+                    <p>Opciones de configuración...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
 
     <script>
@@ -67,15 +144,17 @@
         const formu = document.getElementById("formTarea");
         const txtTarea = document.getElementById("txtTarea");
         const boxTareas = document.getElementById("listaTareas");
-
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
 
         //const listaDeTareas = ["Ordenar el código JS", "Crear las Funciones", "Probar el programa"];
 
         let listaDeTareas = [
-                { id: 1,    titulo: "Ordenar el código JS", isCompletada: true  },
-                { id: 524,  titulo: "Crear las Funciones",  isCompletada: false },
-                { id: 1056, titulo: "Probar el programa",   isCompletada: false },
-                { id : 123123 , titulo: "Probar tarea",isCompletada: false },
+            { id: 1, titulo: "Dormir todo el dia", isCompletada: true },
+            { id: 524, titulo: "Ir de vacaiones", isCompletada: false },
+            { id: 1056, titulo: "Beber cerveza", isCompletada: false },
+            { id: 1345, titulo: "Hacer el proyecto final", isCompletada: false },
         ];
 
 
@@ -88,13 +167,13 @@
         // -----------------------------------------------
         // 3. Funciones principales de nuestra web/programa/app
         // -----------------------------------------------
-        function mostrarTareas(){
+        function mostrarTareas() {
 
             // borrar todo el contenido de la caja antes de mostrar
             boxTareas.innerHTML = "";
 
             // cargamos las nuevas tareas
-            listaDeTareas.forEach( (tarea)=> {
+            listaDeTareas.forEach((tarea) => {
                 console.log("Tarea es: ", tarea);
                 // { id: 1,  titulo: "Ordenar el código JS", isCompletada: true  },
 
@@ -122,84 +201,108 @@
                 `;
             });
         }
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
 
-        function agregarTarea(){
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Funcionalidad de acordeón
+
+
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+
+    
+
+        function agregarTarea() {
             const nuevaTarea = txtTarea.value.trim(); // el texto del input
             console.log(nuevaTarea);
 
             // Tarea inválida (hacemos un return)
-            if( nuevaTarea == ""){ 
-                alert("Por Favor, ingresa una tarea válida"); 
-                return; 
-            } 
-            
+            if (nuevaTarea == "") {
+                alert("Por Favor, ingresa una tarea válida");
+                return;
+            }
+
             // Tarea válida
             txtTarea.value = ""; // limpiar mi input
             //listaDeTareas.push(nuevaTarea); // push() es para agregar nuevo item a la lista
             mostrarTareas();
-            
-            const nuevoID = parseInt(Math.random()*100);
-            
-        const objetoTarea = { id: nuevoID ,titulo :nuevaTarea, isCompletada :false }; 
-        console.log("Nueva tarea a agregar es:", objetoTarea);
-        mostrarTareas(); 
-                
-            }; 
 
-        
+            const nuevoID = parseInt(Math.random() * 100);
 
-        function eliminarTarea(idTarea){
-            alert("Eliminar tarea: "+idTarea);
+            const objetoTarea = { id: nuevoID, titulo: nuevaTarea, isCompletada: false };
+            console.log("Nueva tarea a agregar es:", objetoTarea);
+            mostrarTareas();
+
+        };
+
+
+
+        function eliminarTarea(idTarea) {
+            alert("Eliminar tarea: " + idTarea);
             // Modificar mi lista, y eliminar la tarea idTarea
 
-            
+
             //1.metodo utilizando forEach y splice
-            listaDeTareas = listaDeTareas.filter( tarea=> tarea.id != idTarea);
-            
-            
-                        mostrarTareas();
-                    }
-            
-
-            //listaDeTareas.forEach((tarea,index)=>{
-            //if(tarea.id==idTarea){
-
-            // listaDeTareas.splice(index, 1);
-
-            // }
-
-             //});
+            listaDeTareas = listaDeTareas.filter(tarea => tarea.id != idTarea);
 
 
-            //2. Metodo utilizando findIndex
-
-             //const posición = listaDeTareas.findIndex(tarea=>tarea.id==idTarea );
-            //listaDeTareas.splice(posición,1);
+            mostrarTareas();
+        }
 
 
-             // 3. Metodo utilizando filter
+        //listaDeTareas.forEach((tarea,index)=>{
+        //if(tarea.id==idTarea){
+
+        // listaDeTareas.splice(index, 1);
+
+        // }
+
+        //});
 
 
+        //2. Metodo utilizando findIndex
+
+        //const posición = listaDeTareas.findIndex(tarea=>tarea.id==idTarea );
+        //listaDeTareas.splice(posición,1);
+
+
+        // 3. Metodo utilizando filter
 
 
 
 
-        function completarTarea(idTarea){
-            alert("Completando tarea: "+ idTarea);
+
+
+        function completarTarea(idTarea) {
+            alert("Completando tarea: " + idTarea);
             // modificar mi lista, y cambiar el booleano de true a false, o de false a true en la tarea específica
 
 
             //1. buscar el elemnto con el id deseado
-            const tarea = listaDeTareas.find( (t) => t.id == idTarea );
+            const tarea = listaDeTareas.find((t) => t.id == idTarea);
             console.log("Tarea encotrada: ", tarea);
-            
-            
-            if(tarea.isCompletada == true) {
+
+
+            if (tarea.isCompletada == true) {
                 tarea.isCompletada = false;
             } else {
                 tarea.isCompletada = true;
                 mostrarTareas();
-        }};
+            }
+        };
 
         // -----------------------------------------------
         // 4. EventListeners
@@ -207,7 +310,7 @@
 
         // escuchamos al evento cuando se envía
         formu.addEventListener("submit", (event) => {
-            
+
             // NO envíes el formulario porque quiero hacer cosas antes
             event.preventDefault();
             agregarTarea();
@@ -223,4 +326,5 @@
 
     </script>
 </body>
+
 </html>
