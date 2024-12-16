@@ -30,8 +30,7 @@
             text-align: center;
         }
 
-       
-      
+    
 
         .tabs {
             display: flex;
@@ -148,8 +147,8 @@
         const tabContents = document.querySelectorAll('.tab-content');
         const accordionHeaders = document.querySelectorAll('.accordion-header');
 
+        
         //const listaDeTareas = ["Ordenar el código JS", "Crear las Funciones", "Probar el programa"];
-
         let listaDeTareas = [
             { id: 1, titulo: "Dormir todo el dia", isCompletada: true },
             { id: 524, titulo: "Ir de vacaiones", isCompletada: false },
@@ -244,6 +243,8 @@
 
             const objetoTarea = { id: nuevoID, titulo: nuevaTarea, isCompletada: false };
             console.log("Nueva tarea a agregar es:", objetoTarea);
+            
+            listaDeTareas.push(objetoTarea);
             mostrarTareas();
 
         };
